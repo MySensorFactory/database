@@ -4,11 +4,10 @@ env:
     variables:
         PROJECT_NAME: infrastructure
         BUCKET_NAME: factory-ci-cd
-        S3_LAMBDAS_DESTINATION: applications/lambda
         S3_CICD_FUNCTIONS_DESTINATION: applications/cicd_functions
         LAMBDAS_SOURCE_FOLDER: lambda_functions
         CICD_FUNCTIONS_SOURCE_FOLDER: structure/functions
-        DEPLOY_CONFIG_DIR: applications/database/
+        S3_DEPLOY_CONFIG_DIR: applications/database/
 
 phases: 
     install:
@@ -16,14 +15,16 @@ phases:
             python: 3.11
         commands:
             - apt update -y
+            - pip3 install kubernetes
+            - pip3 install boto3
     pre_build:
         commands:
             - echo "Pre build commands ..."
-            - aws s3 cp s3://factory-ci-cd/applications/cicd/ ./ --recursive
+            - aws s3 cp s3://${BUCKET_NAME}/${S3_CICD_FUNCTIONS_DESTINATION}/ ./ --recursive
     build:
         commands:
             - echo "Updating kube manifests ..."
-            - aws s3 sync kube/ s3://${BUCKET_NAME}/${DEPLOY_CONFIG_DIR}/
+            - aws s3 sync kube/ s3://${BUCKET_NAME}/${S3_DEPLOY_CONFIG_DIR}/
             - echo "Deploying ..."
             - python3 functions/deploy_notifier.py
     post_build:
