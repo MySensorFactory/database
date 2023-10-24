@@ -1,0 +1,6 @@
+order:
+  - sts.yml
+  - svc.yml
+  - pvc.yml
+  - pv.yml
+  - cm.yml

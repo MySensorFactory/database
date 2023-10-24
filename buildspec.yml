@@ -1,0 +1,37 @@
+version: 0.2
+
+env:
+    variables:
+        PROJECT_NAME: infrastructure
+        BUCKET_NAME: factory-ci-cd
+        S3_LAMBDAS_DESTINATION: applications/lambda
+        S3_CICD_FUNCTIONS_DESTINATION: applications/cicd_functions
+        LAMBDAS_SOURCE_FOLDER: lambda_functions
+        CICD_FUNCTIONS_SOURCE_FOLDER: structure/functions
+        DEPLOY_CONFIG_DIR: applications/database/
+
+phases: 
+    install:
+        runtime-versions:
+            python: 3.11
+        commands:
+            - apt update -y
+    pre_build:
+        commands:
+            - echo "Pre build commands ..."
+            - aws s3 cp s3://factory-ci-cd/applications/cicd/ ./ --recursive
+    build:
+        commands:
+            - echo "Updating kube manifests ..."
+            - aws s3 sync kube/ s3://${BUCKET_NAME}/${DEPLOY_CONFIG_DIR}/
+            - echo "Deploying ..."
+            - python3 functions/deploy_notifier.py
+    post_build:
+        commands:
+            - echo "Post build commands  ..."
+cache:
+    paths:
+        - '/root/.m2/**/*'
+        - '/root/.npm/**/*'
+        - '/root/.pip-cache/**/*'
+        - '/root/.docker/**'

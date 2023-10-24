@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-credentials
+  namespace: factory
+  labels:
+    app: database
+data:
+  POSTRGES_DB: "factory"
+  POSTGRES_USER: "factory"
+  POSTGRES_PASSWORD: "factory"

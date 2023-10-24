@@ -1,0 +1,15 @@
+apiVersion: v1
+
+kind: PersistentVolume
+metadata:
+  name: database-pv
+  namespace: factory
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /database/pgdata
+    type: DirectoryOrCreate

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: database-statefulset
+  namespace: factory
+  labels:
+    app: database
+spec:
+  serviceName: database-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      nodeName: ip-172-31-5-64
+      containers:
+        - name: postgres
+          image: postgres:14
+          envFrom:
+            - configMapRef:
+                name: db-credentials
+          ports:
+            - containerPort: 5432
+              name: database
+          volumeMounts:
+            - name: pv-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pv-data
+          persistentVolumeClaim:
+            claimName: database-pvc
