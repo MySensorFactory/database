@@ -24,7 +24,7 @@ phases:
     build:
         commands:
             - echo "Updating kube manifests ..."
-            - aws s3 sync kube/ s3://${BUCKET_NAME}/${S3_DEPLOY_CONFIG_DIR}/
+            - aws s3 sync kube/ s3://${BUCKET_NAME}/${S3_DEPLOY_CONFIG_DIR}
             - echo "Deploying ..."
             - python3 functions/deploy_notifier.py
     post_build:
