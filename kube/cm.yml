@@ -6,6 +6,6 @@ metadata:
   labels:
     app: database
 data:
-  POSTRGES_DB: "factory"
-  POSTGRES_USER: "factory"
-  POSTGRES_PASSWORD: "factory"
+  POSTRGES_DB:  $(echo -n "`aws ssm get-parameter --name /CICD/POSTRGES_DB --with-decrypt --region=eu-central-1 --output text --query Parameter.Value`")
+  POSTGRES_USER:  $(echo -n "`aws ssm get-parameter --name /CICD/POSTGRES_USER --with-decrypt --region=eu-central-1 --output text --query Parameter.Value`")
+  POSTGRES_PASSWORD: $(echo -n "`aws ssm get-parameter --name /CICD/POSTGRES_PASSWORD --with-decrypt --region=eu-central-1 --output text --query Parameter.Value`")
